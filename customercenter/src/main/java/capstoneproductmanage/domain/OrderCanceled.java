@@ -12,4 +12,13 @@ public class OrderCanceled extends AbstractEvent {
     private Integer orderQty;
     private String status;
     private Long price;
+
+    public OrderCanceled(Order aggregate) {
+        super(aggregate);
+    }
+
+    public OrderCanceled() {
+        super();
+    }    
+    
 }

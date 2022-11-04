@@ -12,4 +12,12 @@ public class Ordered extends AbstractEvent {
     private Integer quantity;
     private String status;
     private Long price;
+
+    public Ordered(Order aggregate) {
+        super(aggregate);
+    }
+
+    public Ordered() {
+        super();
+    }    
 }
