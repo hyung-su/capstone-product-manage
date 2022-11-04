@@ -17,7 +17,6 @@ public class MyPage {
         private Integer item;
         private Integer status;
         private Integer quantity;
-        private Integer quantity3;
 
 
 }
