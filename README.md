@@ -172,10 +172,7 @@ Vary: Access-Control-Request-Headers
     "orderQty": 1,
     "price": 10.0,
     "status": "0"
-}
-
-#주문상태 확인
-http localhost:8081/orders  
+} 
 
 #알림 서비스 기동
 cd notice
