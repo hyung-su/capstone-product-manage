@@ -72,71 +72,118 @@ cd customercenter
 mvn spring-boot:run  
 ```
 
-## 1. 비동기식 호출(Pub/Sub) - 편집중
-결제가 이루어진 후에 상품 서비스로 이를 알려주는 행위는 동기식이 아니라 비동기식으로 처리한다.
+## 1. 비동기식 호출(Pub/Sub)
+주문이 완료 되었을때 알림 서비스로 이를 알려주는 행위는 동기식이 아니라 비동기식으로 처리한다.
  
-- 이를 위하여 결제후 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 주문이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ``` 
-(보완필요)
-package fooddelivery;
+package capstoneproductmanage.domain;
 
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
+@Table(name="Order_table")
+@Data
+public class Order  {
 
  ...
-    @PrePersist
-    public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
-    }
+   @PostPersist
+    public void onPostPersist(){
+        Ordered ordered = new Ordered(this);
+        ordered.publishAfterCommit();
 
+    }
+...
 }
 ```
-- 상품 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 알림(notice) 서비스에서는 주문 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-(보완필요)
-package fooddelivery;
+package capstoneproductmanage.infra;
 
 ...
 
 @Service
 public class PolicyHandler{
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
-
-        if(결제승인됨.isMe()){
-            System.out.println("##### listener 주문정보받음 : " + 결제승인됨.toJson());
-            // 주문 정보를 받았으니, 요리를 슬슬 시작해야지..
-            
-        }
+    @StreamListener(value=KafkaProcessor.INPUT, condition="headers['type']=='DeliveryStarted'")
+    public void wheneverDeliveryStarted_KakaoNotice(@Payload DeliveryStarted deliveryStarted){
+        DeliveryStarted event = deliveryStarted;
+        System.out.println("\n\n##### listener KakaoNotice : " + deliveryStarted + "\n\n");
     }
-
 }
 
 ```
 
 
-상품 시스템은 주문/결제와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 상품시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다.
+- 알림 시스템은 주문/결제와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 알림 시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다.
 ```
-# 상품 서비스(product) 를 잠시 내려놓음 (ctrl+c)
+# 알림 서비스(notice) 를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
-http POST localhost:8081/orders item=TV orderQty=2 price=100 status=0 #Success
+#주문처리 (2건)
+$ http POST localhost:8081/orders item=TV-Pub/Sub#1 orderQty=1 price=10 status=0 #Success
+HTTP/1.1 201 
+Connection: keep-alive
+Content-Type: application/json
+Date: Mon, 07 Nov 2022 04:44:36 GMT
+Keep-Alive: timeout=60
+Location: http://localhost:8081/orders/12
+Transfer-Encoding: chunked
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+
+{
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/12"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/12"
+        }
+    },
+    "item": "TV-Pub/Sub#1",
+    "orderQty": 1,
+    "price": 10.0,
+    "status": "0"
+}
+
+$ http POST localhost:8081/orders item=TV-Pub/Sub#2 orderQty=1 price=10 status=0 #Success
+HTTP/1.1 201 
+Connection: keep-alive
+Content-Type: application/json
+Date: Mon, 07 Nov 2022 04:44:41 GMT
+Keep-Alive: timeout=60
+Location: http://localhost:8081/orders/13
+Transfer-Encoding: chunked
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+
+{
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/13"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/13"
+        }
+    },
+    "item": "TV-Pub/Sub#2",
+    "orderQty": 1,
+    "price": 10.0,
+    "status": "0"
+}
 
 #주문상태 확인
-http localhost:8080/orders     # 주문상태 "0(주문접수)" 확인
+http localhost:8081/orders  
 
-#상품 서비스 기동
-cd product
+#알림 서비스 기동
+cd notice
 mvn spring-boot:run
 
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "1(배송중)"으로 확인
+#알림 서비스 로그확인
+##### listener KakaoNotice : OrderCanceled(id=12, item=TV-Pub/Sub#1, orderQty=1, status=0, price=null)
+##### listener KakaoNotice : OrderCanceled(id=13, item=TV-Pub/Sub#2, orderQty=1, status=0, price=null)
 ```
 
 
