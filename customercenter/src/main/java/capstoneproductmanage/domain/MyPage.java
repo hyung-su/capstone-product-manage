@@ -12,10 +12,9 @@ public class MyPage {
 
         @Id
         //@GeneratedValue(strategy=GenerationType.AUTO)
-        private Long id;
         private Long orderId;
-        private Integer item;
-        private Integer status;
+        private String item;
+        private String status;
         private Integer quantity;
 
 
