@@ -51,7 +51,7 @@
   https://labs.msaez.io/#/storming/n1YnKFppadMPlnAVQffdPCgX2XG3/9dcb4885bd50a42876dfd04be9fe5a66
 
 ### 완성 모형
-![image](https://user-images.githubusercontent.com/113887798/199899828-7d65ecca-0ecc-479e-a209-183b2ca6618e.png)
+![image](https://user-images.githubusercontent.com/113887798/200229290-c58083ce-20a1-4787-938e-2fa65e567c37.png)
 
 # 구현:
 
