@@ -1,5 +1,5 @@
 
-# 제품배송 - Castone Project
+# 제품배송 - Capstone Project
 
 - 체크포인트 : https://workflowy.com/s/assessment-check-po/T5YrzcMewfo4J6LW
 
