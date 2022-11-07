@@ -518,22 +518,7 @@ spec:
           image: agnesjh/customercenter:t2
           ports:
             - containerPort: 8080
-          readinessProbe:
-            httpGet:
-              path: '/actuator/health'
-              port: 8080
-            initialDelaySeconds: 10
-            timeoutSeconds: 2
-            periodSeconds: 5
-            failureThreshold: 10
-          livenessProbe:
-            httpGet:
-              path: '/actuator/health'
-              port: 8080
-            initialDelaySeconds: 120
-            timeoutSeconds: 2
-            periodSeconds: 5
-            failureThreshold: 5
+
 ```
 
 ![image](https://user-images.githubusercontent.com/113887798/200248188-5365aa92-f8d9-4971-b654-ffc2f8947abe.png)
