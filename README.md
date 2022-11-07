@@ -8,21 +8,20 @@
 
 - [제품배송](#---)
   - [서비스 시나리오](#서비스-시나리오)
-  - [분석/설계](## Event Storming 결과
+  - [분석/설계](#Event-Storming-결과)
   - [구현:](#구현-)
-    - [1. Saga (Pub/Sub)](## 1. 비동기식 호출(Pub/Sub))
-    - [2. CQRS](## 2. CQRS)
-    - [3. Compensation / Correlation]
-    - [4. Request / Response](## 4. 동기식 호출(Request/Response)
-    - [5. Circuit Breaker](## 5. 장애격리(Circuit Breaker) 
-    - [6. Gateway / Ingress](## 6. Gateway)
+    - Saga (Pub/Sub)
+    - CQRS
+    - Compensation / Correlation
+    - Request / Response
+    - Circuit Breaker
+    - Gateway / Ingress
   - [운영](#운영)
-    - [7. Deploy / Pipeline](## 7. Deploy / Pipeline)
-    - [8. Autoscale (HPA)](## 8.Autoscale (HPA))
-    - [9. Zero-downtime deploy (Readiness probe]
-    - [10. Persistence Volume/ConfigMap/Secret]
-    - [12. Self-healing (liveness probe)]
-  - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
+    - Deploy / Pipeline
+    - Autoscale (HPA)
+    - Zero-downtime deploy (Readiness probe)
+    - Persistence Volume/ConfigMap/Secret
+    - Self-healing (liveness probe)
 
 # 서비스 시나리오
 
@@ -47,7 +46,7 @@
     1. 고객이 자주 상점관리에서 확인할 수 있는 배달상태를 주문시스템(프론트엔드)에서 확인할 수 있어야 한다  (CQRS)
     1. 배달상태가 바뀔때마다 카톡 등으로 알림을 줄 수 있어야 한다  (Event driven)
 
-## Event Storming 결과
+# Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과:  
   https://labs.msaez.io/#/storming/n1YnKFppadMPlnAVQffdPCgX2XG3/9dcb4885bd50a42876dfd04be9fe5a66
 
@@ -637,70 +636,5 @@ Concurrency:		       96.02
 배포기간 동안 Availability 가 변화없기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 
 
-# 신규 개발 조직의 추가
-
-  ![image](https://user-images.githubusercontent.com/487999/79684133-1d6c4300-826a-11ea-94a2-602e61814ebf.png)
-
-
-## 마케팅팀의 추가
-    - KPI: 신규 고객의 유입률 증대와 기존 고객의 충성도 향상
-    - 구현계획 마이크로 서비스: 기존 customer 마이크로 서비스를 인수하며, 고객에 음식 및 맛집 추천 서비스 등을 제공할 예정
-
-## 이벤트 스토밍 
-    ![image](https://user-images.githubusercontent.com/487999/79685356-2b729180-8273-11ea-9361-a434065f2249.png)
-
-
-## 헥사고날 아키텍처 변화 
-
-![image](https://user-images.githubusercontent.com/487999/79685243-1d704100-8272-11ea-8ef6-f4869c509996.png)
-
-## 구현  
-
-기존의 마이크로 서비스에 수정을 발생시키지 않도록 Inbund 요청을 REST 가 아닌 Event 를 Subscribe 하는 방식으로 구현. 기존 마이크로 서비스에 대하여 아키텍처나 기존 마이크로 서비스들의 데이터베이스 구조와 관계없이 추가됨. 
-
-## 운영과 Retirement
-
-Request/Response 방식으로 구현하지 않았기 때문에 서비스가 더이상 불필요해져도 Deployment 에서 제거되면 기존 마이크로 서비스에 어떤 영향도 주지 않음.
-
-* [비교] 결제 (pay) 마이크로서비스의 경우 API 변화나 Retire 시에 app(주문) 마이크로 서비스의 변경을 초래함:
-
-예) API 변화시
-```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-                --> 
-
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제2(pay);
-
-    }
-```
-
-예) Retire 시
-```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        /**
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-        **/
-    }
-```
 
 
