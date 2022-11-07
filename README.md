@@ -536,9 +536,11 @@ kubectl autoscale deployment order --cpu-percent=50 --min=1 --max=3
 siege -c20 -t40S -v http://order:8080/orders
 ```
 - 서비스 호출 증가에 따라 CPU 값이 늘어나는 것을 확인할 수 있다.
+
 ![image](https://user-images.githubusercontent.com/113887798/200251974-7699fc66-fba9-444c-accb-1b25844eec19.png)
 
 - 모니터링 결과 서비스 호출 증가에 따라서 Pod 가 증가했다가 (최대 3개) 시간이 흐름에 따라 다시 줄어드는 것을 확인할 수 있다.
+
 ![image](https://user-images.githubusercontent.com/113887798/200252069-fdab787e-6556-4d43-83ed-9d8a069d3df8.png)
 
 - siege 로그 
@@ -560,8 +562,6 @@ Shortest transaction:           0.00
 
 
 ## 9. Zero-downtime deploy (Readiness probe)
-
-* 먼저 무정지 재배포가 100% 되는 것인지 확인하기 위해서 Autoscaler 이나 CB 설정을 제거함
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
