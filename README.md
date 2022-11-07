@@ -538,40 +538,39 @@ spec:
 
 ![image](https://user-images.githubusercontent.com/113887798/200248188-5365aa92-f8d9-4971-b654-ffc2f8947abe.png)
 
-### 오토스케일 아웃
-앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. 
+## 8.Autoscale (HPA)
+사용자의 요청이 많이 들어올 경우 Auto Scale-Out 설정을 통하여 서비스를 동적으로 확장시킨다. 
 
 
-- 결제서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다:
+- order 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 50%프로를 넘어서면 replica 를 3개까지 늘려준다.
 ```
-kubectl autoscale deploy pay --min=1 --max=10 --cpu-percent=15
+kubectl autoscale deployment order --cpu-percent=50 --min=1 --max=3
 ```
-- CB 에서 했던 방식대로 워크로드를 2분 동안 걸어준다.
+- 테스트를 위해 seige 명령으로 부하를 준다.
 ```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'
+siege -c20 -t40S -v http://order:8080/orders
 ```
-- 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다:
+- 서비스 호출 증가에 따라 CPU 값이 늘어나는 것을 확인할 수 있다.
+![image](https://user-images.githubusercontent.com/113887798/200251974-7699fc66-fba9-444c-accb-1b25844eec19.png)
+
+- 모니터링 결과 서비스 호출 증가에 따라서 Pod 가 증가했다가 (최대 3개) 시간이 흐름에 따라 다시 줄어드는 것을 확인할 수 있다.
+![image](https://user-images.githubusercontent.com/113887798/200252069-fdab787e-6556-4d43-83ed-9d8a069d3df8.png)
+
+- siege 로그 
 ```
-kubectl get deploy pay -w
-```
-- 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
-```
-NAME    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-pay     1         1         1            1           17s
-pay     1         2         1            1           45s
-pay     1         4         1            1           1m
-:
-```
-- siege 의 로그를 보아도 전체적인 성공률이 높아진 것을 확인 할 수 있다. 
-```
-Transactions:		        5078 hits
-Availability:		       92.45 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
+Lifting the server siege...
+Transactions:                  12509 hits
+Availability:                 100.00 %
+Elapsed time:                  39.65 secs
+Data transferred:               3.59 MB
+Response time:                  0.06 secs
+Transaction rate:             315.49 trans/sec
+Throughput:                     0.09 MB/sec
+Concurrency:                   18.72
+Successful transactions:       12515
+Failed transactions:               0
+Longest transaction:            0.79
+Shortest transaction:           0.00
 ```
 
 
