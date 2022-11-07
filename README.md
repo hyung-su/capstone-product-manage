@@ -7,20 +7,21 @@
 # Table of contents
 
 - [제품배송](#---)
-  - [서비스 시나리오](#서비스-시나리오)
-  - [체크포인트](#체크포인트)
-  - [분석/설계](#분석설계)
+  - [서비스 시나리오](# 서비스 시나리오)
+  - [분석/설계](## Event Storming 결과
   - [구현:](#구현-)
-    - [DDD 의 적용](#ddd-의-적용)
-    - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
-    - [폴리글랏 프로그래밍](#폴리글랏-프로그래밍)
-    - [동기식 호출 과 Fallback 처리](#동기식-호출-과-Fallback-처리)
-    - [비동기식 호출 과 Eventual Consistency](#비동기식-호출-과-Eventual-Consistency)
+    - [1. Saga (Pub/Sub) ](## 1. 비동기식 호출(Pub/Sub)
+    - [2. CQRS](## 2. CQRS)
+    - [3. Compensation / Correlation]
+    - [4. Request / Response](## 4. 동기식 호출(Request/Response)
+    - [5. Circuit Breaker](## 5. 장애격리(Circuit Breaker) 
+    - [6. Gateway / Ingress](## 6. Gateway)
   - [운영](#운영)
-    - [CI/CD 설정](#cicd설정)
-    - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
-    - [오토스케일 아웃](#오토스케일-아웃)
-    - [무정지 재배포](#무정지-재배포)
+    - [7. Deploy / Pipeline](## 7. Deploy / Pipeline)
+    - [8. Autoscale (HPA)](## 8.Autoscale (HPA))
+    - [9. Zero-downtime deploy (Readiness probe]
+    - [10. Persistence Volume/ConfigMap/Secret]
+    - [12. Self-healing (liveness probe)]
   - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
 
 # 서비스 시나리오
@@ -50,7 +51,7 @@
 * MSAEz 로 모델링한 이벤트스토밍 결과:  
   https://labs.msaez.io/#/storming/n1YnKFppadMPlnAVQffdPCgX2XG3/9dcb4885bd50a42876dfd04be9fe5a66
 
-### 완성 모형
+### 완성 모델
 ![image](https://user-images.githubusercontent.com/113887798/200229290-c58083ce-20a1-4787-938e-2fa65e567c37.png)
 
 # 구현:
