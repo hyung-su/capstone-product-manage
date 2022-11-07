@@ -186,6 +186,11 @@ mvn spring-boot:run
 ##### listener KakaoNotice : OrderCanceled(id=13, item=TV-Pub/Sub#2, orderQty=1, status=0, price=null)
 ```
 
+## 2. CQRS
+트랜잭션과 분리된 별도 ReadModel을 생성해서 시스템 성능과 안정성을 확보한다.
+- MyPage 모델 생성 후 Ordered 이벤트 발생시 MyPage 모델에 자동반영되도록 한 후
+  실제 Ordered 이벤트 발생 후 Mypages에 반영되는지 확인한다.
+  
 ![image](https://user-images.githubusercontent.com/112880199/200234797-f1af247d-7cea-484a-b468-23a30b2e8c8b.png)
 
 ## 4. 동기식 호출(Request/Response) 
