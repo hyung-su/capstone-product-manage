@@ -68,6 +68,9 @@ mvn spring-boot:run
 cd product
 mvn spring-boot:run  
 
+cd notice
+mvn spring-boot:run  
+
 cd customercenter
 mvn spring-boot:run  
 ```
