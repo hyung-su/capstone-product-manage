@@ -10,15 +10,15 @@
   - [서비스 시나리오](#서비스-시나리오)
   - [분석/설계](#Event-Storming-결과)
   - [구현:](#구현-)
-    - Saga (Pub/Sub)
-    - CQRS
+    - [Saga (Pub/Sub)](#1-비동기식-호출pubsub)
+    - [CQRS](#2-cqrs)
     - Compensation / Correlation
-    - Request / Response
-    - Circuit Breaker
-    - Gateway / Ingress
+    - [Request / Response](#4-동기식-호출requestresponse)
+    - [Circuit Breaker](#5-장애격리circuit-breaker)
+    - [Gateway / Ingress](#6-gateway)
   - [운영](#운영)
-    - Deploy / Pipeline
-    - Autoscale (HPA)
+    - [Deploy / Pipeline](#7-deploy--pipeline)
+    - [Autoscale (HPA)](#8autoscale-hpa)
     - Zero-downtime deploy (Readiness probe)
     - Persistence Volume/ConfigMap/Secret
     - Self-healing (liveness probe)
