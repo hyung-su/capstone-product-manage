@@ -10,7 +10,7 @@
   - [서비스 시나리오](# 서비스 시나리오)
   - [분석/설계](## Event Storming 결과
   - [구현:](#구현-)
-    - [1. Saga (Pub/Sub) ](## 1. 비동기식 호출(Pub/Sub)
+    - [1. Saga (Pub/Sub)](## 1. 비동기식 호출(Pub/Sub)
     - [2. CQRS](## 2. CQRS)
     - [3. Compensation / Correlation]
     - [4. Request / Response](## 4. 동기식 호출(Request/Response)
