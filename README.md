@@ -140,7 +140,7 @@ http localhost:8081/orders/1
 
 ```
 
-## 4. 동기식 호출(Request/Response) 과 Fallback 처리
+## 4. 동기식 호출(Request/Response) 
 
 분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
@@ -252,7 +252,41 @@ http POST localhost:8081/orders item=TV orderQty=2 price=100   #Success
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
 
+## 5. 장애격리(Circuit Breaker) 
+- 서킷브레이커 설정
 
+```
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    # 전역설정
+    default:
+      execution.isolation.thread.timeoutInMilliseconds:300m
+
+```
+      
+- 동기식 호출에 대한 장애 전파 차단을 구현한다. 주문 생성 시 Pay 서비스가 정상적이지 않은 경우 Fast-Fail 을 유도한다.
+
+```
+package capstoneproductmanage.external;
+
+@FeignClient(name = "pay", url = "${api.url.pay}", fallback = PayServiceFallback.class)
+```
+
+- PayServiceFallback 구현체 구현
+```
+package capstoneproductmanage.external;
+
+@Service
+public class PayServiceFallback implements PayService{
+    public void approvePayment(Pay pay){
+        System.out.println("PayService is Not Available. orderId = "+ pay.getOrderId() );
+    }
+}
+```
 
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
