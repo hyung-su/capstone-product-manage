@@ -186,6 +186,7 @@ mvn spring-boot:run
 ##### listener KakaoNotice : OrderCanceled(id=13, item=TV-Pub/Sub#2, orderQty=1, status=0, price=null)
 ```
 
+![image](https://user-images.githubusercontent.com/112880199/200234797-f1af247d-7cea-484a-b468-23a30b2e8c8b.png)
 
 ## 4. 동기식 호출(Request/Response) 
 
