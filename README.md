@@ -326,9 +326,11 @@ public class PayServiceFallback implements PayService{
 PayService is Not Available. orderId = 2
 ```
 
-## 6. Gateway (편집중)
+
+## 6. Gateway
       
-- API Gateway를 통하여 마이크로 서비스들의 집입점을 통일한다.
+- API Gateway를 통하여 마이크로 서비스들의 진입점을 통일한다.
+- Spring Cloud Gateway 에 아래와 같이 설정 한 후 서비스를 기동한다.
 
 ```
 #Spring Cloud Gateway Config (application.yml)
@@ -356,11 +358,19 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=, /myPages/**
+            
+# 서비스기동
+cd gateway
+mvn spring-boot:run
+
+# Gateway 가 8088 포트로 기동됨
+2022-11-07 05:24:48.337  INFO 41334 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8088
+
 ```
 
-- Gateway Port 를 통해 서비스를 호출한다.
+- 아래와 같이 서비스를 호출한다. (Service Port 호출, Gateway Port 호출)
 ```
-# 1. Order 서비스 호출 (서비스 포트 8081 이용하여 호출)
+# 1. Order 서비스 호출 (Service Port 8081 이용하여 호출)
 $ http POST localhost:8081/orders item=TV-ServicePort orderQty=2 price=100 status=0 #Success
 HTTP/1.1 201 
 Connection: keep-alive
@@ -388,7 +398,7 @@ Vary: Access-Control-Request-Headers
     "status": "0"
 }
 
-# 2. Order 서비스 호출 (Gateway 포트 8088 이용하여 호출)
+# 2. Order 서비스 호출 (Gateway Port 8088 이용하여 호출)
  $ http POST localhost:8088/orders item=TV-GatewayPort orderQty=2 price=100 status=0 #Success
 HTTP/1.1 201 Created
 Content-Type: application/json
