@@ -326,7 +326,94 @@ public class PayServiceFallback implements PayService{
 PayService is Not Available. orderId = 2
 ```
 
+## 6. Gateway (편집중)
+      
+- API Gateway를 통하여 마이크로 서비스들의 집입점을 통일한다.
 
+```
+#Spring Cloud Gateway Config (application.yml)
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order
+          uri: http://localhost:8081
+          predicates:
+            - Path=/orders/**, 
+        - id: product
+          uri: http://localhost:8082
+          predicates:
+            - Path=/products/**, 
+        - id: pay
+          uri: http://localhost:8083
+          predicates:
+            - Path=/pays/**, 
+        - id: notice
+          uri: http://localhost:8084
+          predicates:
+            - Path=, 
+        - id: customercenter
+          uri: http://localhost:8085
+          predicates:
+            - Path=, /myPages/**
+```
+
+- Gateway Port 를 통해 서비스를 호출한다.
+```
+# 1. Order 서비스 호출 (서비스 포트 8081 이용하여 호출)
+$ http POST localhost:8081/orders item=TV-ServicePort orderQty=2 price=100 status=0 #Success
+HTTP/1.1 201 
+Connection: keep-alive
+Content-Type: application/json
+Date: Mon, 07 Nov 2022 05:30:29 GMT
+Keep-Alive: timeout=60
+Location: http://localhost:8081/orders/23
+Transfer-Encoding: chunked
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+
+{
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/23"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/23"
+        }
+    },
+    "item": "TV-ServicePort",
+    "orderQty": 2,
+    "price": 100.0,
+    "status": "0"
+}
+
+# 2. Order 서비스 호출 (Gateway 포트 8088 이용하여 호출)
+ $ http POST localhost:8088/orders item=TV-GatewayPort orderQty=2 price=100 status=0 #Success
+HTTP/1.1 201 Created
+Content-Type: application/json
+Date: Mon, 07 Nov 2022 05:31:37 GMT
+Location: http://localhost:8081/orders/24
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/24"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/24"
+        }
+    },
+    "item": "TV-GatewayPort",
+    "orderQty": 2,
+    "price": 100.0,
+    "status": "0"
+}
+```
 
 # 운영
 
