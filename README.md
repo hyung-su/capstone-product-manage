@@ -178,21 +178,76 @@ public interface PayService {
 
     }
 ```
+- 동기식 호출 정상 확인
+```
+#order 서비스 호출 (주문 생성) 시 pay 신규 생성 확인
+$ http POST  localhost:8081/orders item=tv orderQty=3 status=0 price=1000
+HTTP/1.1 201 
+Connection: keep-alive
+Content-Type: application/json
+Date: Mon, 07 Nov 2022 01:41:23 GMT
+Keep-Alive: timeout=60
+Location: http://localhost:8081/orders/1
+Transfer-Encoding: chunked
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 
+{
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/1"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/1"
+        }
+    },
+    "item": "tv",
+    "orderQty": 3,
+    "price": 1000.0,
+    "status": "0"
+}
+
+$ http GET  localhost:8083/pays/1
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/hal+json
+Date: Mon, 07 Nov 2022 01:41:33 GMT
+Keep-Alive: timeout=60
+Transfer-Encoding: chunked
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+
+{
+    "_links": {
+        "pay": {
+            "href": "http://localhost:8083/pays/1"
+        },
+        "self": {
+            "href": "http://localhost:8083/pays/1"
+        }
+    },
+    "orderId": 1,
+    "price": 1000.0,
+    "status": "0"
+}
+
+```
 - 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
 
 ```
 #pay 서비스를 잠시 내려놓음 (ctrl+c)
 
 #주문처리
-http localhost:8081/orders item=TV orderQty=2 price=100   #Fail
+http POST localhost:8081/orders item=TV orderQty=2 price=100   #Fail
 
 #pay 서비스 재기동
 cd pay
 mvn spring-boot:run
 
 #주문처리
-http localhost:8081/orders item=TV orderQty=2 price=100   #Success
+http POST localhost:8081/orders item=TV orderQty=2 price=100   #Success
 ```
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
