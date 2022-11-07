@@ -191,6 +191,60 @@ mvn spring-boot:run
 - MyPage 모델 생성 후 Ordered 이벤트 발생시 MyPage 모델에 자동반영되도록 한 후
   실제 Ordered 이벤트 발생 후 Mypages에 반영되는지 확인한다.
   
+  gitpod /workspace/capstone-product-manage/customercenter (main) $ mvn spring-boot:run
+  gitpod /workspace/capstone-product-manage (main) $ http POST localhost:8081/orders item="CQR111" quantity=111 status="st1" price=111
+  {
+    "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/1"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/1"
+        }
+    },
+    "item": "CQR111",
+    "price": 111.0,
+    "quantity": 111,
+    "status": "st1"
+}
+
+   "_links": {
+        "order": {
+            "href": "http://localhost:8081/orders/1"
+        },
+        "self": {
+            "href": "http://localhost:8081/orders/1"
+        }
+    },
+    "item": "CQR111",
+    "price": 111.0,
+    "quantity": 111,
+    "status": "st1"
+}
+
+
+gitpod /workspace/capstone-product-manage (main) $ http :8085/myPages
+{
+    "_embedded": {
+        "myPages": [
+            {
+                "_links": {
+                    "myPage": {
+                        "href": "http://localhost:8085/myPages/1"
+                    },
+                    "self": {
+                        "href": "http://localhost:8085/myPages/1"
+                    }
+                },
+                "item": "CQR111",
+                "quantity": 111,
+                "status": "st1"
+            }
+        ]
+    },
+
+          
+  
 ![image](https://user-images.githubusercontent.com/112880199/200234797-f1af247d-7cea-484a-b468-23a30b2e8c8b.png)
 
 ## 4. 동기식 호출(Request/Response) 
