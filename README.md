@@ -684,3 +684,22 @@ data:
 ![image](https://user-images.githubusercontent.com/113887798/200454389-232596ad-eae8-46d0-b178-2e2d470ed93b.png)
 ![image](https://user-images.githubusercontent.com/113887798/200454476-dd6aa48f-e35b-47a4-817f-5e03885319c2.png)
 ![image](https://user-images.githubusercontent.com/113887798/200454312-26f2b9f2-f88c-444c-98fa-7982038a7762.png)
+
+## 12. Self-healing (liveness probe)
+
+- 컨테이너에 장애가 생겼을 때, 컨테이너 플랫폼이 자동으로 장애를 감지하여 복구하는지 확인하기 위해, LivenessProbe 설정을 한다. (/abcde 는 존재하지 않는 URL임)
+```
+#deployment.yaml
+          livenessProbe:
+            httpGet:
+              path: '/abcde'
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+            successThreshold: 1
+            periodSeconds: 5
+            failureThreshold: 3 
+```
+- Deployement 적용 후 kubectl describe 명령어를 통해 pod 의 상태를 조회해보면 아래와 같이 LivenessProbe 가 동작하는 것을 확인할 수 있다.
+
+![image](https://user-images.githubusercontent.com/113887798/200482185-2e8bb739-1349-4479-97da-1b5ec22f19c0.png)
