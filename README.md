@@ -615,12 +615,71 @@ Failed transactions:               0
 
 ## 10. Persistence Volume/ConfigMap/Secret (편집중)
 
-- Order 서비스의 데이터베이스를 mysql로 설정한다.
+- Order 서비스의 데이터베이스를 mysql로 설정하여, 재배포 (agnesjh/order:database-1108)
 ```
+#application.yaml
+spring:
+  profiles: docker
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL57Dialect
+  datasource:
+    url: jdbc:mysql://${_DATASOURCE_ADDRESS:35.221.110.118:3306}/${_DATASOURCE_TABLESPACE:my-database}
+    username: ${_DATASOURCE_USERNAME:root1}
+    password: ${_DATASOURCE_PASSWORD:secretpassword}
+    driverClassName: com.mysql.cj.jdbc.Driver
 ```
+- Deployement 에 Database 접속 정보 및 PV 정보를 env 로 설정하고, Database 접속 비밀번호는 Secret 으로 설정
+```
+#Deployment.yaml
+...
+    spec:
+      containers:
+        - name: order
+          image: agnesjh/order:database-1108
+          ports:
+            - containerPort: 8080
+          env:
+            - name: superuser.userId
+              value: userId
+            - name: _DATASOURCE_ADDRESS
+              value: mysql
+            - name: _DATASOURCE_TABLESPACE
+              value: orderdb
+            - name: _DATASOURCE_USERNAME
+              value: root
+            - name: _DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password  
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+type: Opaque
+data:
+  password: YWRtaW4=
+```  
 
 - 데이터베이스 비밀번호를 보호하기 위해 secret 으로 저장
 
+![image](https://user-images.githubusercontent.com/113887798/200454082-a62c84b6-5df8-4be1-a096-a295565c84d6.png)
+
 - PersistenceVolume 을 설정하여 데이터베이스 데이터 보존
 
+![image](https://user-images.githubusercontent.com/113887798/200454182-c50a32d2-3b78-40bd-a6fb-4e0544dc29c5.png)
 
+- Order 생성 테스트 후 mysql pod 재시작, 데이터 보존 여부 확인
+![image](https://user-images.githubusercontent.com/113887798/200454389-232596ad-eae8-46d0-b178-2e2d470ed93b.png)
+![image](https://user-images.githubusercontent.com/113887798/200454476-dd6aa48f-e35b-47a4-817f-5e03885319c2.png)
+![image](https://user-images.githubusercontent.com/113887798/200454312-26f2b9f2-f88c-444c-98fa-7982038a7762.png)
