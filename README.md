@@ -671,11 +671,11 @@ data:
   password: YWRtaW4=
 ```  
 
-- 데이터베이스 비밀번호를 보호하기 위해 secret 으로 저장
+- 데이터베이스 비밀번호를 보호하기 위해 secret 으로 저장 (name : mysql-pass)
 
 ![image](https://user-images.githubusercontent.com/113887798/200454082-a62c84b6-5df8-4be1-a096-a295565c84d6.png)
 
-- PersistenceVolume 을 설정하여 데이터베이스 데이터 보존
+- PersistenceVolume 을 설정(fs 생성)
 
 ![image](https://user-images.githubusercontent.com/113887798/200454182-c50a32d2-3b78-40bd-a6fb-4e0544dc29c5.png)
 
