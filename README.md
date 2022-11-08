@@ -21,7 +21,7 @@
     - [Autoscale (HPA)](#8autoscale-hpa)
     - [Zero-downtime deploy (Readiness probe)](#9-zero-downtime-deploy-readiness-probe)
     - [Persistence Volume/ConfigMap/Secret](#10-persistence-volumeconfigmapsecret)
-    - Self-healing (liveness probe)
+    - [Self-healing (liveness probe)](#12-self-healing-liveness-probe)
 
 # 서비스 시나리오
 
