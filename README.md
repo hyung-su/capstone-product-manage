@@ -613,4 +613,14 @@ Failed transactions:               0
 
 
 
+## 10. Persistence Volume/ConfigMap/Secret (편집중)
+
+- Order 서비스의 데이터베이스를 mysql로 설정한다.
+```
+```
+
+- 데이터베이스 비밀번호를 보호하기 위해 secret 으로 저장
+
+- PersistenceVolume 을 설정하여 데이터베이스 데이터 보존
+
 
