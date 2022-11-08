@@ -679,7 +679,8 @@ data:
 
 ![image](https://user-images.githubusercontent.com/113887798/200454182-c50a32d2-3b78-40bd-a6fb-4e0544dc29c5.png)
 
-- Order 생성 테스트 후 mysql pod 재시작, 데이터 보존 여부 확인
+- 데이터 보존 여부 테스트 : Order 데이터 생성 후 mysql pod 재생성, mysql 접속하여 데이터 보존 여부 확인
+
 ![image](https://user-images.githubusercontent.com/113887798/200454389-232596ad-eae8-46d0-b178-2e2d470ed93b.png)
 ![image](https://user-images.githubusercontent.com/113887798/200454476-dd6aa48f-e35b-47a4-817f-5e03885319c2.png)
 ![image](https://user-images.githubusercontent.com/113887798/200454312-26f2b9f2-f88c-444c-98fa-7982038a7762.png)
