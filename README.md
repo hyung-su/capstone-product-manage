@@ -247,6 +247,39 @@ gitpod /workspace/capstone-product-manage (main) $ http :8085/myPages
   
 ![image](https://user-images.githubusercontent.com/112880199/200234797-f1af247d-7cea-484a-b468-23a30b2e8c8b.png)
 
+## 3. Compensation / Corrleation
+
+Product에 ItemCd 12345 코드에 해당하는 제품의 재고를 생성한 후, 결제가 승인(PayApproved)될 때
+해당 제품의 제고가 주문수량만큼 감소하는지 확인한다.
+
+http POST localhost:8082/products itemcd=12345 id=1 address=서울 orderQty=100 totalQuantity=10000
+http :8082/products
+http POST localhost:8083/pays id=1 price=3000 status=order1 itemcd=12345 orderQty=100   
+http :8083/pays
+
+                },
+                "address": "서울",
+                "id": 1,
+                "orderQty": 100,
+                "totalQuantity": 10000
+            }
+        ]
+    },
+    "_links": {
+        "profile": {
+            "href": "http://localhost:8082/profile/products"
+        },
+        "self": {
+            "href": "http://localhost:8082/products"
+        }
+    },
+    "page": {
+        "number": 0,
+        "size": 20,
+        "totalElements": 1,
+        "totalPages": 1
+
+
 ## 4. 동기식 호출(Request/Response) 
 
 분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
