@@ -20,7 +20,7 @@
     - [Deploy / Pipeline](#7-deploy--pipeline)
     - [Autoscale (HPA)](#8autoscale-hpa)
     - [Zero-downtime deploy (Readiness probe)](#9-zero-downtime-deploy-readiness-probe)
-    - Persistence Volume/ConfigMap/Secret
+    - [Persistence Volume/ConfigMap/Secret](#10-persistence-volumeconfigmapsecret)
     - Self-healing (liveness probe)
 
 # 서비스 시나리오
@@ -613,7 +613,7 @@ Failed transactions:               0
 
 
 
-## 10. Persistence Volume/ConfigMap/Secret (편집중)
+## 10. Persistence Volume/ConfigMap/Secret
 
 - Order 서비스의 데이터베이스를 mysql로 설정하여, 재배포 (agnesjh/order:database-1108)
 ```
