@@ -390,8 +390,6 @@ mvn spring-boot:run
 http POST localhost:8081/orders item=TV orderQty=2 price=100   #Success
 ```
 
-- 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
-
 ## 5. 장애격리(Circuit Breaker) 
       
 - 동기식 호출에 대한 장애 전파 차단을 구현한다. 주문 생성 시 Pay 서비스가 정상적이지 않은 경우 fallback 처리를 구현한다. (현재는 메세지만 처리)
